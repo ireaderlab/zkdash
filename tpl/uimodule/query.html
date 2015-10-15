@@ -1,0 +1,29 @@
+<!--
+Args:
+  column: 操作列字典
+  default_column: 默认操作列id
+  operator: 操作字典
+  default_operator: 默认操作
+  time_flag: 时间标记
+-->
+<select name="column" data-toggle="selectpicker">
+  <option value="{{ default_column }}">{{ column.get(default_column) }}</option>
+  {% for k, v in column.iteritems() %}
+    {% if k != default_column %}
+    <option value="{{ k }}">{{ v }}</option>
+    {% end %}
+  {% end %}
+</select>&nbsp;
+<select name="operator" data-toggle="selectpicker">
+  <option value="{{ default_operator }}">{{ operator.get(default_operator) }}</option>
+  {% for k, v in operator.iteritems() %}
+    {% if k != default_operator %}
+    <option value="{{ k }}"> {{ v }}</option>
+    {% end %}
+  {% end %}
+</select>&nbsp;
+{% if time_flag %}
+<input type="text" id="search_id" value="" name="query" data-toggle="datepicker" size="15">&nbsp;
+{% else %}
+<input type="text" id="search_id" value="" name="query" class="form-control" size="10">&nbsp;
+{% end %}

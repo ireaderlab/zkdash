@@ -1,0 +1,26 @@
+<div class="bjui-headBar">
+ <ul>
+  {% module Operation() %}
+ </ul>
+</div>
+<table class="table table-bordered table-hover table-striped table-top" data-toggle="tablefixed" data-layout-h="0">
+ <thead>
+  <tr>
+    <th data-order-field="ip" align="left">ip</th>
+    <th data-order-field="hostname" align="left">主机名</th>
+    <th data-order-field="notes" align="left">说明</th>
+    <th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+  </tr>
+ </thead>
+ <tbody>
+   {% for record in records %}
+   <tr data-id="{{ record.id }}">
+     <td>{% if record.ip %} {{ record.ip }} {% end %} </td>
+     <td>{% if record.hostname %} {{ record.hostname }} {% end %} </td>
+     <td>{% if record.notes %} {{ record.notes }} {% end %} </td>
+     <td><input type="checkbox" name="ids" data-toggle="icheck" value="{{ record.id }}"></td>
+   </tr>
+   {% end %}
+ </tbody>
+</table>
+{% module Paginate(total, current_page, page_size) %}

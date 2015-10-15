@@ -1,0 +1,63 @@
+<div class="bjui-pageContent">
+ <form id="updateZookeeperCluster" class="form-horizontal" role="form" action="{{ action }}" id="j_custom_form" data-toggle="validate" data-reload-navtab="true" data-alertmsg="false">
+  {% raw xsrf_form_html() %}
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+   <div class="form-group">
+    <label class="col-md-4 control-label">集群名称:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="cluster_name" value="{{ record.cluster_name }}" size="25">
+    </div>
+   </div>
+   <div class="form-group">
+    <label class="col-md-4 control-label">集群配置:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="hosts" value="{{ record.hosts }}" size="25">
+    </div>
+   </div>
+   <div class="form-group">
+    <label class="col-md-4 control-label">集群业务:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="business" value="{{ record.business }}" size="25">
+    </div>
+   </div>
+   <input type="hidden" name="id" value="{{ record.id }}" size="25">
+  </div>
+ </form>
+</div>
+<div align="right" class="bjui-pageFooter">
+   <button type="submit" class="btn-default" data-icon="save">保存</button>
+   <button type="button" class="btn-close" data-icon="close">取消</button>
+</div>
+<script>
+  $('#updateZookeeperCluster').validator({
+      rules: {
+        // 自定义loginName规则，填写用户名、手机号或者邮箱
+        checkClusterHosts: function(element){
+            var result = element.value.split(/[,，]/);
+            for (var i = 0; i < result.length; i++){
+              var ip_ports = result[i].split(':');
+              // 端口检验
+              if (ip_ports.length > 1){
+                var port = ip_ports[1];
+                if (!(/^\d+$/.test(port) && parseInt(port) > 0 && parseInt(port) < 65535)){
+                  return '端口号不正确';
+                }
+              }
+              // ip地址检验
+              var ip_numbers = ip_ports[0].split('.');
+              if (ip_numbers.length != 4) {
+                  return 'ip地址不正确, 多个ip地址请以英文逗号符[,]区分';
+              }
+              for (var i = 0; i < ip_numbers.length; i++){
+                if (!(/^\d+$/.test(ip_numbers[i]) && parseInt(ip_numbers[i]) > -1 && parseInt(ip_numbers[i]) < 256)){
+                  return 'ip地址不正确, 多个ip地址请以英文逗号符[,]区分';
+                }
+              }
+            }
+        },
+      },
+      fields: {
+        "hosts": "required; checkClusterHosts",
+      }
+  });
+</script>

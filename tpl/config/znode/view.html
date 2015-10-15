@@ -1,0 +1,27 @@
+<div class="bjui-pageContent">
+ <form class="form-horizontal">
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点类型:</label>
+    <div class="col-md-8">
+      <input class="form-control" type="text" value="{% if download_link %}文件节点{% else %}普通节点{% end %}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点值:</label>
+    <div class="col-md-8">
+      {% if download_link %}
+        <a type="button" class="btn btn-default" href="{{ download_link }}">点击下载节点文件</a>
+      {% else %}
+        <textarea class="form-control" type="text" rows="3" cols="25" readonly>
+          {{ data }}
+        </textarea>
+      {% end %}
+    </div>
+   </div>
+
+  </div>
+ </form>
+</div>

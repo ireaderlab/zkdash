@@ -1,0 +1,71 @@
+<div class="bjui-pageContent">
+ <form class="form-horizontal" role="form" action="{{ action }}" data-toggle="validate" data-reload-navtab="true" data-alertmsg="false">
+  {% raw xsrf_form_html() %}
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">当前集群名称:</label>
+    <div class="col-md-8">
+      <input class="form-control" type="text" name="cluster_name" value="{{ cluster_name }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">父节点路径:</label>
+    <div class="col-md-8">
+      <input class="form-control" type="text" name="parent_path" value="{{ parent_path }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+     <label class="col-md-4 control-label">添加元素:</label>
+     <div class="col-md-4">
+      <button type="button" class="btn-green" data-toggle="tableditadd" data-target="#znode_tree_table" data-num="1" data-icon="plus">添加级别</button>
+      &nbsp;&nbsp;&nbsp;(双击行可进行编辑)
+     </div>
+   </div>
+
+   <div class="form-group">
+     <fieldset>
+        <table id="znode_tree_table" class="table table-bordered table-hover table-top" data-toggle="tabledit" data-initnum="0">
+          <thead>
+            <tr>
+              <th title="序号">
+                <input name="level" type="text" class="no" value="1" size="5" readonly>
+              </th>
+              <th title="键名">
+                <input name="key" type="text">
+              </th>
+              <th title="键值">
+                <input name="value" type="text">
+              </th>
+              <th title="操作">
+                <a href="#" onclick="deleteTreeNode(this)" class="btn btn-red">删除</a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for znode in child_znodes %}
+            <tr>
+              <td></td>
+              <td data-val="{{ znode['name'] }}"></td>
+              <td data-val="{{ znode['value'] }}"></td>
+              <td data-val="{{ znode['path'] }}"></td>
+            </tr>
+            {% end %}
+          </tbody>
+        </table>
+      </fieldset>
+  </div>
+  </div>
+  <div align="right" class="bjui-footBar">
+   <button type="submit" class="btn-default" data-icon="save">保存</button>
+   <button type="button" class="btn-close" data-icon="close">取消</button>
+  </div>
+ </form>
+</div>
+<script>
+function deleteTreeNode(target){
+  $(target).addClass("row-del");
+}
+</script>

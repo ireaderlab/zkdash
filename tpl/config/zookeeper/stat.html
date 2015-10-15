@@ -1,0 +1,42 @@
+<div class="bjui-pageContent">
+
+  <div class="panel panel-default">
+    <div class="panel-heading"> ZOOKEEPER集群 </div>
+      <div class="panel-body">
+        {% for zk in zk_clusters %}
+          <div class="btn-group">
+            <button class="btn btn-default" value="{{ zk.hosts }}" onclick="display_zk_hosts(this)">{{ zk.cluster_name }}</button>
+          </div>
+        {% end %}
+      </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"> ZOOKEEPER集群节点 </div>
+    <div class="panel-body">
+      <div class="list-group" id="zk_cluster_nodes">
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="text/javascript">
+function open_zk_dialog(target){
+  var host = $(target).attr('value');
+  var req_url = "/config/zookeeper/stat?hosts=" + host;
+  $(target).dialog({url:req_url, title:'zookeeper节点状态'});
+}
+
+function display_zk_hosts(target){
+
+  $("#zk_cluster_nodes").html("");
+
+  var zk_hosts = $(target).val().split(',');
+  var content = "";
+  for(var i=0; i < zk_hosts.length; i++){
+    var temp = '<a href="#" class="list-group-item" onclick="open_zk_dialog(this)" value="' + zk_hosts[i] + '">' + zk_hosts[i] + '</a>';
+    content += temp;
+  }
+  $("#zk_cluster_nodes").html(content);
+}
+</script>

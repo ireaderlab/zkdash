@@ -1,0 +1,37 @@
+# database
+DATABASE:
+ db: 'zkdash'
+ host: '192.168.1.1'
+ port: 3306
+ user: 'tokyo'
+ passwd: 'tokyo!'
+
+# 是否通过QConf获取zookeeper数据（使用该项需要在本地先运行QConf客户端agent）
+USE_QCONF: False
+
+# log conf
+LOG_ITEMS:
+  - file: /data/logs/zkdash/zkdash.log
+    log_levels:
+      - DEBUG
+      - INFO
+      - WARNING
+      - ERROR
+      - CRITICAL
+    format: '[%(levelname)s %(asctime)s %(filename)s %(lineno)d] %(message)s'
+    when: 'midnight'
+    interval: 1
+    backup_count: 10
+    backup_suffix: '%Y%m%d'
+    level: 'DEBUG'
+  - file: /data/logs/zkdash/zkdash.error.log
+    log_levels:
+      - WARNING
+      - ERROR
+      - CRITICAL
+    format: '[%(levelname)s %(asctime)s %(filename)s %(lineno)d] %(message)s'
+    when: 'midnight'
+    interval: 1
+    backup_count: 30
+    backup_suffix: '%Y%m%d'
+    level: 'DEBUG'

@@ -1,0 +1,219 @@
+<div class="row" style="padding: 0 8px; margin-top: 8px;">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">节点展示</div>
+      <div class="panel-body" style="height:470px; overflow:auto">
+        <ul id='ztree_znode' class='ztree' data-toggle='ztree' data-expand-all='true' data-nodes='{{znodes_data}}' data-on-click='zkNodeClick'>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">节点详情</div>
+      <div class="panel-body" style="height:470px; overflow:auto">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">集群名称</button>
+              </span>
+              <input type="text" class="form-control" id="zk_node_cluster" value="{{cluster_name}}" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">节点路径</button>
+              </span>
+              <input type="text" class="form-control" id="zk_node_path" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">节点名称</button>
+              </span>
+              <input type="text" class="form-control" id="zk_node_name" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>CRUD操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-green" id="view_znode">查看</button>
+              <button type="button" class="btn btn-green" id="edit_znode">修改</button>
+              <button type="button" class="btn btn-green" id="add_znode">新增</button>
+              <button type="button" class="btn btn-green" onclick="deleteZNode(this, '0')">删除</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>批量操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-blue" id="batch_edit_znodes">批量增改</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>快照操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-green" id="view_znode_snapshot">查看快照</button>
+              <button type="button" class="btn btn-green" id="add_znode_snapshot">生成快照</button>
+              <button type="button" class="btn btn-blue" id="add_snapshots">批量生成快照</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>反馈操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-orange" id="view_sync_status">同步状况</button>
+              <button type="button" class="btn btn-orange" id="export_znode">导出</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>地狱门</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-red" onclick="deleteZNode(this, '1')">批量删除</button>
+            </div>
+          </li>
+        </ul>
+    </div>
+  </div>
+ </div>
+</div>
+<script>
+function zkNodeClick(event, treeId, treeNode){
+    if (treeNode.path) {
+      $('#zk_node_path').val(treeNode.path)
+    } else {
+      $('#zk_node_path').val('')
+    }
+    if (treeNode.name) {
+      $('#zk_node_name').val(treeNode.name)
+    } else {
+      $('#zk_node_name').val('')
+    }
+};
+
+$('#add_znode').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/add?parent_path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '新增子节点', width: 600, height: 400});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#add_znode_tree').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $('#zk_node_cluster').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/addtree?parent_path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '新增子节点树', width: 800, height: 450});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#view_znode').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/view?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '查看节点'});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#edit_znode').on('click', function(){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/edit?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title:'更新节点', width:600, height:400});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#batch_edit_znodes').on('click', function(){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/batchedit?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title:'更新节点', width:800, height:450});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#export_znode').on('click', function(){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/export?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).bjuiajax('doExport', {url:req_url, confirmMsg:"确认导出该节点下所有数据吗？"})
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#view_sync_status').on('click', function(){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/syncstatus?cluster_name=' + cluster_name + '&path=' + path;
+    $(this).dialog({url:req_url, title: '查看同步状态', width: 800, height: 320});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+})
+
+$('#view_znode_snapshot').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/view?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '快照查看', width: 1000, height: 300});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#add_znode_snapshot').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/save?cluster_name=' + cluster_name + '&path=' + path;
+    $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:"确认生成当前节点快照吗？"})
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#add_snapshots').on('click', function(event){
+  var cluster_name = $("#zk_node_cluster").val();
+  var path = $('#zk_node_path').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/addsnapshots?cluster_name=' + cluster_name + '&path=' + path;
+    $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:"确认生成该节点下所有快照吗？"})
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+function deleteZNode(target, recursive){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $("#zk_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/delete?cluster_name=' + cluster_name + '&path=' + path + '&recursive=' + recursive;
+    var confirm_msg = "确认删除选中节点吗？";
+    if (recursive == "1") {
+      confirm_msg = "确认删除选中节点及所有子节点吗？";
+    }
+    $(target).bjuiajax('doAjax', {url:req_url, confirmMsg:confirm_msg})
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+}
+</script>

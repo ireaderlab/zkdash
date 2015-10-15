@@ -1,0 +1,55 @@
+<div class="bjui-pageContent">
+    <div class="panel panel-default">
+      <div class="panel-heading">QConf Agent</div>
+      <div class="panel-body">
+        <div class="bjui-searchBar" id="agent_searcher">
+            <label>集群名称:</label>
+            <select name="cluster_name" data-toggle="selectpicker">
+            {% for cluster in clusters %}
+            <option value="{{ cluster.cluster_name }}">{{ cluster.cluster_name }}</option>
+            {% end %}
+            </select>&nbsp;&nbsp;
+            <label>qconf临时节点路径:</label>
+            <input type="text" name="agent_register_prefix" value="{{ agent_register_prefix }}" size=30>
+            <button type="submit" id="search_agent_btn" class="btn btn-default" data-icon="search">查询</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Agent</div>
+        <div class="panel-body" id="qconf_agents">
+          <div class="row">
+            <div class="col-lg-6">
+              <strong href="#" class="list-group-item">Mysql统计的Agent</strong>
+            </div><!-- /.col-lg-6 -->
+            <div class="col-lg-6">
+              <strong href="#" class="list-group-item">Zookeeper注册的Agent</strong>
+            </div><!-- /.col-lg-6 -->
+          </div><!-- /.row -->
+        </div>
+    </div>
+</div>
+<script>
+$('#search_agent_btn').on('click', function(event){
+    $("#qconf_agents .row:gt(0)").remove();
+    var cluster_name = $('select[name="cluster_name"] option:selected').val();
+    var agent_register_prefix = $('input[name="agent_register_prefix"]').val();
+    console.log(cluster_name);
+    $.post(
+        "config/agent/checkagents",
+        {cluster_name: cluster_name, agent_register_prefix: agent_register_prefix, _xsrf: $.cookie('_xsrf')},
+        function(data){
+          json_data = JSON.parse(data);
+          var content = "";
+          for(var i=0; i < json_data.length; i++){
+            var row = '<div class="row">'
+            row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + json_data[i][0] + '</a></div>';
+            row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + json_data[i][1] + '</a></div>';
+            row += '</div>'
+            content += row;
+          }
+          $("#qconf_agents").append(content);
+        }
+    );
+});
+</script>

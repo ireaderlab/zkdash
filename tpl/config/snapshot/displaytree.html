@@ -1,0 +1,148 @@
+<div class="row" style="padding: 0 8px; margin-top: 8px;">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">节点展示</div>
+      <div class="panel-body" style="height:470px; overflow:auto">
+        <ul id='snapshots_ztree' class='ztree' data-toggle='ztree' data-expand-all='true' data-nodes='{{znodes_data}}' data-on-click='SnapshotNodeClick'>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">节点详情</div>
+      <div class="panel-body" style="height:470px; overflow:auto">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">集群名称</button>
+              </span>
+              <input type="text" class="form-control" id="snapshot_node_cluster" value="{{cluster_name}}" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">节点路径</button>
+              </span>
+              <input type="text" class="form-control" id="snapshot_node_path" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">节点名称</button>
+              </span>
+              <input type="text" class="form-control" id="snapshot_node_name" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>普通操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-green" id="view_snapshot">查看快照</button>
+              <button type="button" class="btn btn-green" id="add_snapshot">生成快照</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>批量操作</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-blue" id="add_batch_snapshots">批量生成快照</button>
+              <button type="button" class="btn btn-blue" onclick="rollback_snapshots(this, '1')">批量回滚</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>快照树维护</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-orange" onclick="delete_snapshot_node(this, '0')">删除节点</button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <label>地狱门</label>
+            <div class="input-group">
+              <button type="button" class="btn btn-red" onclick="delete_snapshot_node(this, '1')">删除节点树</button>
+            </div>
+          </li>
+        </ul>
+    </div>
+  </div>
+ </div>
+</div>
+<script>
+function SnapshotNodeClick(event, treeId, treeNode){
+    if (treeNode.path) {
+      $('#snapshot_node_path').val(treeNode.path)
+    } else {
+      $('#snapshot_node_path').val('')
+    }
+    if (treeNode.name) {
+      $('#snapshot_node_name').val(treeNode.name)
+    } else {
+      $('#snapshot_node_name').val('')
+    }
+};
+
+$('#view_snapshot').on('click', function(event){
+  var path = $('#snapshot_node_path').val();
+  var cluster_name = $("#snapshot_node_cluster").val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/view?path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '快照查看', width: 1000, height: 300});
+  } else {
+    $(this).alertmsg('error', '请指定节点！');
+  }
+});
+
+$('#add_snapshot').on('click', function(event){
+  var cluster = $('#snapshot_node_cluster').val();
+  var path = $('#snapshot_node_path').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/save?cluster_name=' + cluster + '&path=' + path;
+    $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:"确认生成当前节点快照吗？"})
+  } else {
+    $(this).alertmsg('error', '请指定节点！');
+  }
+});
+
+$('#add_batch_snapshots').on('click', function(event){
+  var cluster = $('#snapshot_node_cluster').val();
+  var path = $('#snapshot_node_path').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/addsnapshots?cluster_name=' + cluster_name + '&path=' + path;
+    $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:'确认生成所有节点快照吗？'})
+  } else {
+    $(this).alertmsg('error', '请指定父节点！');
+  }
+});
+
+function rollback_snapshots(target, recursive) {
+  var cluster = $('#snapshot_node_cluster').val();
+  var path = $('#snapshot_node_path').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/snapshot/rollback?cluster_name=' + cluster +
+      '&path=' + path + '&recursive=' + recursive;
+    var msg = ((recursive == "1") ? "确认递归回滚该节点下所有快照吗？" : "确认回滚该节点快照吗？");
+    $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:msg});
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+};
+
+function delete_snapshot_node(target, recursive) {
+  var cluster = $('#snapshot_node_cluster').val();
+  var node_path = $('#snapshot_node_path').val();
+  if (node_path && node_path.trim().length > 0) {
+    var req_url = 'config/snapshot/deletenodes?cluster_name=' + cluster +
+      '&node_path=' + node_path + '&recursive=' + recursive;
+    var confirm_msg;
+    if (recursive == "1") {
+      confirm_msg = "确认删除选中节点及所有子节点吗？";
+    } else {
+      confirm_msg = "确认删除选中节点吗？";
+    }
+    $(target).bjuiajax('doAjax', {url:req_url, confirmMsg:confirm_msg})
+  } else {
+    $(this).alertmsg('error', '请指定快照节点路径！');
+  }
+}
+</script>

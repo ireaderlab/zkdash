@@ -1,0 +1,25 @@
+<div class="bjui-pageContent">
+  <table class="table table-bordered table-hover" data-toggle="tablefixed" data-width="1000" data-height="250">
+    <thead>
+      <tr>
+        <th>快照路径</th>
+        <th>快照生成时间</th>
+        <th>快照状态</th>
+        <th>快照值</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+      {% for snapshot in snapshots %}
+      <tr>
+        <td>{{ snapshot.path }}</td>
+        <td>{{ snapshot.create_time }}</td>
+        <td>{{ status_mapping.get(snapshot.status) }}</td>
+        <td>{{ snapshot.data }}</td>
+        <td>
+          <a type="button" href="config/snapshot/rollback?cluster_name={{ snapshot.cluster_name }}&path={{ snapshot.path }}&snapshot_id={{ snapshot.id }}" class="btn btn-default" data-toggle="doajax" data-confirm-msg="确定要回滚到该快照吗">回滚</a>
+          <a type="button" href="config/snapshot/delete?info_ids={{ snapshot.id }}" class="btn btn-default row-del" data-toggle="doajax" data-confirm-msg="确定要删除该快照吗">删除</a>
+        </td>
+      </tr>
+      {% end %}
+  </table>
+</div>

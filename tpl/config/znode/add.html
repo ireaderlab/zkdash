@@ -1,0 +1,76 @@
+<div class="bjui-pageContent">
+ <form class="form-horizontal" role="form" action="{{ action }}" enctype="multipart/form-data"  data-toggle="validate" data-reload-navtab="true" data-alertmsg="false">
+  {% raw xsrf_form_html() %}
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">当前集群名称:</label>
+    <div class="col-md-8">
+      <input class="form-control" type="text" name="cluster_name" value="{{ cluster_name }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">当前父节点路径:</label>
+    <div class="col-md-8">
+      <input class="form-control" type="text" name="parent_path" value="{{ parent_path }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点名:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="node_name" value="" size="25" data-rule="required">
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点类型</label>
+    <div class="col-md-8">
+     <select name="znode_type" id="znode_type" data-toggle="selectpicker">
+      <option value='0'>普通节点</option>
+      <option value='1'>文件节点</option>
+     </select>
+    </div>
+   </div>
+
+   <div class="form-group" id="zk_data_node">
+    <label class="col-md-4 control-label">节点值:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="data" value="" size="25">
+    </div>
+   </div>
+
+   <div class="form-group" id="zk_file_node" style="display:none">
+    <label class="col-md-4 control-label">节点值:</label>
+    <div class="col-md-8">
+      <input type="file" name="uploadfile">
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">业务:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="business" value="" size="25">
+    </div>
+   </div>
+
+  </div>
+ </form>
+</div>
+<div align="right" class="bjui-pageFooter">
+   <button type="submit" class="btn-default" data-icon="save">保存</button>
+   <button type="button" class="btn-close" data-icon="close">取消</button>
+</div>
+<script>
+$("#znode_type").change(function(){
+    var znodeType = $("#znode_type option:selected").val();
+    if (znodeType == "1") {
+      $("#zk_data_node").hide();
+      $("#zk_file_node").show();
+    } else {
+      $("#zk_data_node").show();
+      $("#zk_file_node").hide();
+    }
+})
+</script>

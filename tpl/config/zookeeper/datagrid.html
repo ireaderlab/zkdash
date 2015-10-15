@@ -1,0 +1,26 @@
+<div class="bjui-headBar">
+ <ul>
+  {% module Operation() %}
+ </ul>
+</div>
+<table class="table table-bordered table-hover table-striped table-top" data-toggle="tablefixed" data-layout-h="0">
+ <thead>
+  <tr>
+    <th data-order-field="cluster_name" align="left">集群名称</th>
+    <th data-order-field="hosts" align="left">集群配置</th>
+    <th data-order-field="business" align="left">集群业务</th>
+    <th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+  </tr>
+ </thead>
+ <tbody>
+   {% for record in records %}
+   <tr data-id="{{ record.id }}">
+     <td>{% if record.cluster_name %} {{ record.cluster_name }} {% end %} </td>
+     <td>{% if record.hosts %} {{ record.hosts }} {% end %} </td>
+     <td>{% if record.business %} {{ record.business }} {% end %} </td>
+     <td><input type="checkbox" name="ids" data-toggle="icheck" value="{{ record.id }}"></td>
+   </tr>
+   {% end %}
+ </tbody>
+</table>
+{% module Paginate(total, current_page, page_size) %}

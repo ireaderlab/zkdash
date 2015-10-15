@@ -1,0 +1,74 @@
+<div class="bjui-pageHeader">
+ <form class="pagerForm" id="zookeeper-pagerForm" data-toggle="ajaxform" action="{{ action }}" method="post">
+  <div class="bjui-searchBar">
+   {% raw xsrf_form_html() %}
+   <input type="hidden" name="pageSize" value="{{ page_size }}">
+   <input type="hidden" name="pageCurrent" value="{{ current_page }}">
+   {% module Query({'cluster_name': '集群名称', }, 'cluster_name', '=') %}
+   {% module Query({'hosts': '集群配置', 'business': '集群业务', }, 'hosts', '=') %}
+   <button type="button" class="showMoreSearch" data-toggle="moresearch" data-name="custom"><i class="fa fa-angle-double-down"></i></button>
+   <button type="submit" class="btn-default" data-icon="search">查询</button>&nbsp;
+   <a class="btn btn-orange" href="javascript:;" data-toggle="reloadsearch" data-clear-query="true" data-icon="undo">清空查询</a>
+  </div>
+  <div class="bjui-moreSearch">
+  </div>
+ </form>
+</div>
+<div class="bjui-pageContent" id="zookeeper-pageContent">
+ <div class="bjui-headBar">
+
+  <ul>
+    <div class="btn-group pull-left" role="group">
+      <button type="button" class="btn-blue" data-url="/config/zookeeper/edit?info_ids={{ '{#bjui-selected}' }}" data-id="_config_zookeeper_edit" data-toggle="navtab" data-icon="edit">修改</button>
+      <button type="button" class="btn-blue" data-url="/config/zookeeper/add?" data-id="_config_zookeeper_add" data-toggle="navtab" data-icon="plus">新增</button>
+      <button type="button" class="btn-blue" data-url="/config/zookeeper/delete?info_ids={{ '{#bjui-selected}' }}" data-confirm-msg="确定要删除选中项吗？" data-id="" data-toggle="doajax" data-icon="remove">删除</button>
+      <button type="button" class="btn-blue" data-url="/config/zookeeper/show?" data-id="_config_zookeeper_history" data-toggle="navtab" data-icon="edit">状态查看</button>
+    </div>
+      <!--删除，导出，发布三种有批量操作-->
+    <div class="pull-right">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn-default dropdown-toggle" data-toggle="dropdown" data-icon="copy">复选框-批量操作<span class="caret"></span></button>
+        <ul class="dropdown-menu right" role="menu">
+          <li><a href="/config/zookeeper/delete" data-toggle="doajaxchecked" data-confirm-msg="确定要删除选中项吗？" data-idname="info_ids" data-group="ids">删除选中</a></li>
+          <li><a href="/config/zookeeper/export" data-toggle="doexportchecked" data-confirm-msg="确定要导出选中项吗？" data-idname="info_ids" data-group="ids">导出选中</a></li>
+        </ul>
+      </div>
+    </div>
+  </ul>
+
+ </div>
+ <table class="table table-bordered table-hover table-striped table-top" data-toggle="tablefixed" data-layout-h="0">
+  <thead>
+   <tr>
+     <th data-order-field="cluster_name" align="left">集群名称</th>
+     <th data-order-field="hosts" align="left">集群配置</th>
+     <th data-order-field="business" align="left">集群业务</th>
+     <th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
+   </tr>
+  </thead>
+  <tbody>
+    {% for record in records %}
+    <tr data-id="{{ record.id }}">
+      <td>{% if record.cluster_name %} {{ record.cluster_name }} {% end %} </td>
+      <td>{% if record.hosts %} {{ record.hosts }} {% end %} </td>
+      <td>{% if record.business %} {{ record.business }} {% end %} </td>
+      <td><input type="checkbox" name="ids" data-toggle="icheck" value="{{ record.id }}"></td>
+    </tr>
+    {% end %}
+  </tbody>
+ </table>
+ {% module Paginate(total, current_page, page_size) %}
+</div>
+<script>
+//调用
+$(document).ready(function() {
+    $('#zookeeper-pagerForm').on('submit', function(e){
+        ajaxSubmit(this, function(data){
+            // alert(data);
+            $("#zookeeper-pageContent").html(data).initui();
+            return false;
+        });
+        return false;
+    });
+});
+</script>

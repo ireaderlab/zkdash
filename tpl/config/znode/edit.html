@@ -1,0 +1,58 @@
+<div class="bjui-pageContent">
+ <form class="form-horizontal" role="form" action="{{ action }}" enctype="multipart/form-data" data-toggle="validate" data-reload-navtab="true" data-alertmsg="false">
+  {% raw xsrf_form_html() %}
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">集群名:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="cluster_name" value="{{ cluster_name }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点名:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="path" value="{{ path }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点类型</label>
+    <div class="col-md-8">
+      <select name="znode_type" id="ed_node_types" data-toggle="selectpicker">
+        <option value='0' {% if not download_link %} selected {% end %}>普通节点</option>
+        <option value='1' {% if download_link %} selected {% end %}>文件节点</option>
+      </select>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">节点值:</label>
+    <div class="col-md-8" id="ed_node_data">
+      {% if download_link %}
+        <a type="button" class="btn btn-default" href="{{ download_link }}">点击下载节点文件</a>
+      {% else %}
+        <input class="form-control" type="text" name="data" value="{{ data }}" size="25">
+      {% end %}
+    </div>
+   </div>
+
+  </div>
+ </form>
+</div>
+<div align="right" class="bjui-pageFooter">
+   <button type="submit" class="btn-default" data-icon="save">保存</button>
+   <button type="button" class="btn-close" data-icon="close">取消</button>
+</div>
+<script>
+$("#ed_node_types").change(function(){
+    var node_type = $("#ed_node_types option:selected").val();
+    //0代表普通节点，1代表文本节点
+    if (node_type == "0") {
+      $("#ed_node_data").html('<input class="form-control" type="text" name="data" value="{{ data }}" size="25">');
+    } else if (node_type == "1" || node_type == "2") {
+      $("#ed_node_data").html('<input type="file" name="uploadfile">');
+    }
+})
+</script>

@@ -1,0 +1,35 @@
+<div class="col-md-12" style="margin-top: 10px">
+  <div class="panel panel-default">
+    <div class="panel-heading">配置查询</div>
+    <div class="panel-body">
+      <div class="bjui-searchBar" id="config_searcher">
+          <label>集群名称:</label>
+          <select name="cluster_name" data-toggle="selectpicker">
+          {% for cluster in clusters %}
+          <option value="{{ cluster.cluster_name }}">{{ cluster.cluster_name }}</option>
+          {% end %}
+          </select>
+          &nbsp;
+          <label>节点路径:</label>
+          <input class="form-control" type="text" name="path" value="" placeholder="查询节点路径" size="25">
+          &nbsp;
+          <button type="submit" id="search_config_btn" data-loading-mask="true" class="btn btn-default" data-icon="search">查询</button>&nbsp;
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$("#search_config_btn").on("click", function(event){
+    var cluster, path;
+    cluster = $("#config_searcher select[name='cluster_name']").val();
+    path = $("#config_searcher input[name='path']").val() || "/";
+    $(this).navtab({
+        url: "config/znode/displaytree",
+        id: "display_ztree",
+        fresh: true,
+        title: "配置信息",
+        loadingmask: true,
+        data: {cluster_name: cluster, path: path, _xsrf:$.cookie("_xsrf")},
+    });
+});
+</script>

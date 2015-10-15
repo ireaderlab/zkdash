@@ -1,0 +1,69 @@
+@charset "utf-8";
+/**
+Author :        zhanglina
+Version:        1.0
+Date   :	2013-02-19
+Explain:        此样式为页面初始化样式。
+**/
+
+/*------------------------------- CSSReset -------------------------------*/
+
+/** 清除边距 **/
+body,h1,h2,h3,h4,h5,h6,p,blockquote, /* structural elements 结构元素 */
+dl,dt,dd,ul,ol,li,a,span,i,b, /* list elements 列表元素 */
+form,fieldset,legend,button,input,textarea, /* form elements 表单元素 */
+th,td /* table elements 表格元素 */ {margin:0;padding:0;}
+
+/** 字体设置 **/
+body,
+button,input,select,textarea/* for ie */{font:12px/1.5 \5b8b\4f53, arial; color:#333;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+address,em{font-style:normal;} /* 将斜体扶正 */
+/*去除元素轮廓---fbx---*/
+div,table,form,input,button,select,textarea,fieldset,legend{outline:none;}/* for google / safari*/
+/** 重置列表元素 **/
+ul,ol{list-style:none outside none;}
+/** 重置链接元素 **/
+a{text-decoration:none;cursor:pointer;}
+a:link,a:visited {color: #333; text-decoration:none;}
+/** 重置表单元素 **/
+legend{text-indent:-9999px;height:0;}
+fieldset,img{border:0;} /* img 搭车：让链接里的 img 无边框 */
+button,input,select,textarea {font-size:100%;} /* 使得表单元素在 ie 下能继承字体大小 */
+
+/** 重置表格元素 **/
+table{border-collapse:collapse;border-spacing:0;}
+
+/** 重置元素垂直居中 **/
+img,input,select,textarea,button{vertical-align:middle;}
+.z-fl{float:left;}
+.z-fr{float:right;}
+.z-clear{clear:both;}
+.z-position{position:relative;}
+.z-overf{overflow:hidden; zoom:1;}
+.z-textC{text-align:center;}
+.z-strong{font-weight:bold;}
+img{border:0 none; line-height:1;}
+.z-mTop10{margin-top:10px;}
+.z-mR10{margin-right:10px;}
+.z-padb10{padding-bottom:10px;}
+
+/*首页*/
+#z-index{background:url(../images/magage-bg.jpg) repeat-x #2782bb;}
+.z-p-head,.z-p-content,.z-p-footer{min-width:1000px;}
+.z-head,.z-content,.z-footer {
+width: 1000px;
+margin: 0 auto;
+}
+.z-p-head{ height:100px;}
+.z-head{padding-top:35px;}
+.z-centerhead{width:450px; margin:0 auto;}
+.z-head a{float:left;}
+.z-head span{font-size:36px; padding-left:20px; line-height:1; font-family:"微软雅黑"; color:#fff; display:inline-block; padding-top:12px;}
+.z-content{height:500px; background:url(../images/magage-img.jpg) no-repeat top;}
+.z-login{width:590px; margin:0 auto; padding-top:420px;}
+.z-login .z-tit{font-size:22px; line-height:1; font-family:"微软雅黑"; color:#fff; font-weight:lighter;padding-top:6px; margin-right:15px;}
+.z-login .z-text{ line-height:1; border:1px solid #D7D6D6;-moz-box-shadow:-1px 1px 3px #E7E1E1 inset; /* For Firefox3.6+ */-webkit-box-shadow:-1px 1px 3px #E7E1E1 inset; /* For Chrome5+, Safari5+ */box-shadow:-1px 1px 3px #E7E1E1 inset;width:180px; padding:8px 0 7px 10px;+padding:10px 0 6px 9px; font-family:"微软雅黑";font-size:16px; color:#999; border-radius:4px; float:left; margin-right:6px;}
+.z-login .z-btn{ cursor:pointer; border:0 none;height:39px; width:84px;font-size:16px; color:#999; border-radius:4px; background:url(../images/btn.jpg) no-repeat; color:#fff; font-size:20px;font-family:"微软雅黑"; overflow:hidden; line-height:100px;}
+.z-p-footer{ font-family:Arial, Helvetica, sans-serif; width:100%;height:42px;text-align:center;}
+.z-footer{height:42px; color:#6D6D6D; line-height:42px;color:#98BEE1;}
