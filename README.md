@@ -39,13 +39,15 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
  - 同步数据库表结构
  
  	```
- 	python bin/syncdb.py
+ 	cd zkdash
+ 	python ./bin/syncdb.py
 	```
 	说明：数据库使用mysql，创建表结构前请先配置数据库连接信息
 
  - 运行
 
     ```
+        cd zkdash
 	python init.py -port=8888
 	```
 	说明：初次运行zkdash时需要到zookeeper管理菜单下增加监控的zookeeper集群ip信息
