@@ -21,7 +21,6 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
  	根据需要修改当前目录下./conf/conf.yml中相关配置信息，配置文件详细说明见后面
 
  - 同步数据库表结构
-
  	```sh
  	python bin/syncdb.py
 	```
