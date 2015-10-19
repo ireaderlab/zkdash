@@ -30,7 +30,7 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
     ```
      cd zkdash
      pip install -r requirements.txt
- 	```
+    ```
 
  - 设置配置文件
  
