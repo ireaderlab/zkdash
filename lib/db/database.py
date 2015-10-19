@@ -9,8 +9,8 @@ All rights reserved.
 创 建 者: WangLichao
 创建日期: 2015-01-26
 """
-# pylint: disable=invalid-name, bad-super-call, bare-except
-from peewee import MySQLDatabase
+# pylint: disable=invalid-name, bare-except
+from lib.db.retrydb import MyRetryDB
 from peewee import Model as _Model
 from peewee import DoesNotExist
 from peewee import OperationalError
@@ -28,7 +28,7 @@ class Database(object):
 
     def load_database(self):
         self.db = self.connect_kwargs.pop('db')
-        self.database = MySQLDatabase(self.db, **self.connect_kwargs)
+        self.database = MyRetryDB(self.db, **self.connect_kwargs)
         self.database.field_overrides.update({'enum': 'enum'})  # 增加枚举类型
 
     def get_model_class(self):
