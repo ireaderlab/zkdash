@@ -1,6 +1,23 @@
 <div class="bjui-headBar">
  <ul>
-  {% module Operation() %}
+
+    <div class="btn-group pull-left" role="group">
+      <button type="button" class="btn-blue" data-url="/config/agent/edit?info_ids={{ '{#bjui-selected}' }}" data-id="_config_agent_edit" data-toggle="navtab" data-icon="edit">修改</button>
+      <button type="button" class="btn-blue" data-url="/config/agent/add?" data-id="_config_agent_add" data-toggle="navtab" data-icon="plus">新增</button>
+      <button type="button" class="btn-blue" data-url="/config/agent/delete?info_ids={{ '{#bjui-selected}' }}" data-confirm-msg="确定要删除选中项吗？" data-id="" data-toggle="doajax" data-icon="remove">删除</button>
+      <button type="button" class="btn-blue" data-url="/config/agent/watch?" data-id="_config_agent_watch" data-toggle="navtab" data-icon="cogs">观察</button>
+    </div>
+    <!--删除，导出，发布三种有批量操作-->
+    <div class="pull-right">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn-default dropdown-toggle" data-toggle="dropdown" data-icon="copy">复选框-批量操作<span class="caret"></span></button>
+        <ul class="dropdown-menu right" role="menu">
+          <li><a href="/config/agent/delete" data-toggle="doajaxchecked" data-confirm-msg="确定要删除选中项吗？" data-idname="info_ids" data-group="ids">删除选中</a></li>
+          <li><a href="/config/agent/export" data-toggle="doexportchecked" data-confirm-msg="确定要导出选中项吗？" data-idname="info_ids" data-group="ids">导出选中</a></li>
+        </ul>
+      </div>
+    </div>
+
  </ul>
 </div>
 <table class="table table-bordered table-hover table-striped table-top" data-toggle="tablefixed" data-layout-h="0">
@@ -8,6 +25,7 @@
   <tr>
     <th data-order-field="ip" align="left">ip</th>
     <th data-order-field="hostname" align="left">主机名</th>
+    <th data-order-field="cluster_name" align="left">集群名</th>
     <th data-order-field="notes" align="left">说明</th>
     <th width="26"><input type="checkbox" class="checkboxCtrl" data-group="ids" data-toggle="icheck"></th>
   </tr>
@@ -17,6 +35,7 @@
    <tr data-id="{{ record.id }}">
      <td>{% if record.ip %} {{ record.ip }} {% end %} </td>
      <td>{% if record.hostname %} {{ record.hostname }} {% end %} </td>
+     <td>{% if record.cluster_name %} {{ record.cluster_name }} {% end %} </td>
      <td>{% if record.notes %} {{ record.notes }} {% end %} </td>
      <td><input type="checkbox" name="ids" data-toggle="icheck" value="{{ record.id }}"></td>
    </tr>

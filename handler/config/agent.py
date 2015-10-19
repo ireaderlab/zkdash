@@ -47,7 +47,7 @@ class ZdQconfAgentIndexHandler(CommonBaseHandler):
             getattr(order, self.order_direction)()
         ).where(reduce(operator.and_, clauses))
         self.render('config/agent/index.html',
-                    action='/config/agent/index',
+                    action='/config/agent/search',
                     total=records.count(),
                     current_page=self.current_page,
                     page_size=self.page_size,
@@ -67,9 +67,7 @@ class WsAgentWatchHandler(CommonBaseHandler):
     def response(self):
         '''watch
         '''
-        clusters = ZdZookeeper.select().where(
-            (ZdZookeeper.deleted == "0") & (ZdZookeeper.cluster_name.startswith('qconf'))
-        )
+        clusters = ZdZookeeper.select().where(ZdZookeeper.deleted == "0")
         self.render('config/agent/watch.html',
                     clusters=clusters,
                     agent_register_prefix=self.agent_register_prefix)
@@ -115,7 +113,7 @@ class WsAgentCheckAgentsHandler(CommonBaseHandler):
             else:
                 cmp_res = [agent_name, agent_name]
             agents_stat.append(cmp_res)
-        self.finish(json.dumps(agents_stat))
+        return agents_stat
 
 
 @route(r'/config/agent/search')
@@ -194,7 +192,7 @@ class ZdQconfAgentSaveHandler(CommonBaseHandler):
         if self.deleted:
             tb_inst.deleted = self.deleted
         tb_inst.save()
-        return self.ajax_ok(close_current=True)
+        return self.ajax_ok(forward="/config/agent/index")
 
 
 @route(r'/config/agent/add', '新增')
@@ -229,9 +227,7 @@ class ZdQconfAgentEditHandler(CommonBaseHandler):
             id_li = self.info_ids.split(',')
             if len(id_li) != 1:
                 return self.ajax_popup(close_current=False, code=300, msg="请选择单条记录进行修改")
-            clusters = ZdZookeeper.select().where(
-                (ZdZookeeper.deleted == "0") & (ZdZookeeper.cluster_name.startswith('qconf'))
-            )
+            clusters = ZdZookeeper.select().where(ZdZookeeper.deleted == "0")
             record = ZdQconfAgent.one(id=id_li[0])
             return self.render('config/agent/edit.html',
                                action='/config/agent/save',

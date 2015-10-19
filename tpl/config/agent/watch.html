@@ -34,21 +34,25 @@ $('#search_agent_btn').on('click', function(event){
     $("#qconf_agents .row:gt(0)").remove();
     var cluster_name = $('select[name="cluster_name"] option:selected').val();
     var agent_register_prefix = $('input[name="agent_register_prefix"]').val();
-    console.log(cluster_name);
     $.post(
         "config/agent/checkagents",
         {cluster_name: cluster_name, agent_register_prefix: agent_register_prefix, _xsrf: $.cookie('_xsrf')},
         function(data){
-          json_data = JSON.parse(data);
-          var content = "";
-          for(var i=0; i < json_data.length; i++){
-            var row = '<div class="row">'
-            row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + json_data[i][0] + '</a></div>';
-            row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + json_data[i][1] + '</a></div>';
-            row += '</div>'
-            content += row;
+          // 确认是否有注册Agent的数据
+          if (data.statusCode && data.statusCode === 300) {
+            $(this).alertmsg('warn', '该节点路径下无注册Agent数据!');
+          } else {
+            // 显示注册的Agent
+            var content = "";
+            for(var i=0; i < data.length; i++){
+              var row = '<div class="row">'
+              row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + data[i][0] + '</a></div>';
+              row += '<div class="col-lg-6"><a href="#" class="list-group-item">' + data[i][1] + '</a></div>';
+              row += '</div>'
+              content += row;
+            }
+            $("#qconf_agents").append(content);
           }
-          $("#qconf_agents").append(content);
         }
     );
 });
