@@ -207,9 +207,7 @@ class ZdQconfAgentAddHandler(CommonBaseHandler):
     def response(self):
         '''add
         '''
-        clusters = ZdZookeeper.select().where(
-            (ZdZookeeper.deleted == "0") & (ZdZookeeper.cluster_name.startswith('qconf'))
-        )
+        clusters = ZdZookeeper.select().where(ZdZookeeper.deleted == "0")
         return self.render('config/agent/add.html',
                            action='config/agent/save',
                            clusters=clusters)
