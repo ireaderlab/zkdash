@@ -47,7 +47,7 @@ class ZdQconfAgentIndexHandler(CommonBaseHandler):
             getattr(order, self.order_direction)()
         ).where(reduce(operator.and_, clauses))
         self.render('config/agent/index.html',
-                    action='/config/agent/search',
+                    action='/config/agent/index',
                     total=records.count(),
                     current_page=self.current_page,
                     page_size=self.page_size,
