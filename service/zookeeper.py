@@ -27,20 +27,26 @@ def get_zoo_client(cluster_name="qconf"):
     """
     global ZOO_CLIENTS
 
-    zookeeper = ZdZookeeper.one(cluster_name=cluster_name, deleted="0")
-    if not zookeeper:
-        raise ZookeeperConfError("Zookeeper not configured for cluster {}!".format(cluster_name))
-
     if cluster_name not in ZOO_CLIENTS:
+        # get zookeeper hosts info
+        zookeeper = ZdZookeeper.one(cluster_name=cluster_name, deleted="0")
+        if not zookeeper:
+            raise ZookeeperConfError("Zookeeper not configured for cluster: {}!".format(cluster_name))
+        # connect to zookeeper
         try:
-            client = KazooClient(hosts=zookeeper.hosts, connection_retry={"max_tries": 1, "backoff": 1})
-            client.start(timeout=3)
+            client = KazooClient(hosts=zookeeper.hosts,
+                                 connection_retry={"max_tries": 3, "backoff": 2})
+            client.start(3)
             ZOO_CLIENTS[cluster_name] = client
         except KazooTimeoutError as exc:
             log.error('Failed to connnect zookeeper, %s', str(exc))
             return
 
-    return ZOO_CLIENTS[cluster_name]
+    # check connection's state, if not connected, reconect
+    zoo_client = ZOO_CLIENTS[cluster_name]
+    if not zoo_client.connected:
+        zoo_client.restart()
+    return zoo_client
 
 
 def exists(cluster_name, path):
