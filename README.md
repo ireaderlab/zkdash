@@ -28,8 +28,8 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
  - 安装依赖项
 
     ```
-     cd zkdash
-     pip install -r requirements.txt
+    cd zkdash
+    pip install -r requirements.txt
     ```
 
  - 设置配置文件
@@ -46,8 +46,8 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
 
  - 运行
 
-    ```
-        cd zkdash
+	```
+	cd zkdash
 	python init.py -port=8888
 	```
 	说明：初次运行zkdash时需要到zookeeper管理菜单下增加监控的zookeeper集群ip信息
