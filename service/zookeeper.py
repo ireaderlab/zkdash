@@ -45,7 +45,7 @@ def get_zoo_client(cluster_name="qconf"):
     # check connection's state, if not connected, reconect
     zoo_client = ZOO_CLIENTS[cluster_name]
     if not zoo_client.connected:
-        zoo_client.restart()
+        zoo_client.start()
     return zoo_client
 
 
