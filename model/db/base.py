@@ -12,18 +12,10 @@ All rights reserved.
 from peewee import Field
 
 from lib.db.database import Database
-from conf import log
 from conf.settings import DATABASE
 
 # 后台管理数据库
 ZKDASH_DB = Database(**DATABASE)
-
-
-def reconnect():
-    '''重连数据库
-    '''
-    log.info('重连数据库...')
-    ZKDASH_DB.connect()
 
 
 class EnumField(Field):

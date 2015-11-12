@@ -23,7 +23,7 @@
 <script type="text/javascript">
 function open_zk_dialog(target){
   var host = $(target).attr('value');
-  var req_url = "/config/zookeeper/stat?hosts=" + host;
+  var req_url = "/config/zookeeper/stat?host=" + host;
   $(target).dialog({url:req_url, title:'zookeeper节点状态'});
 }
 

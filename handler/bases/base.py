@@ -14,12 +14,10 @@ import json
 
 from tornado import escape
 from tornado.web import RequestHandler
-from peewee import OperationalError
 
 from lib.utils import toint, tofloat
-from conf import log
 from lib.utils import log_format
-from model.db.base import reconnect
+from conf import log
 
 
 class ArgsMap(object):
@@ -128,12 +126,6 @@ class RestHandler(BaseHandler):
             return self.send_obj({'status': 1000, 'msg': msg})
         try:
             res = self.response()
-        except OperationalError as e:
-            # Mysql 连接错误
-            log.warning('Mysql OperationalError: %s', e)
-            reconnect()
-            # 如果连接失败重新加载当前请求页面
-            return self.redirect(self.request.uri)
         except Exception:
             import traceback
             e = traceback.format_exc()

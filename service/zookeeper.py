@@ -36,7 +36,7 @@ def get_zoo_client(cluster_name="qconf"):
         try:
             client = KazooClient(hosts=zookeeper.hosts,
                                  connection_retry={"max_tries": 3, "backoff": 2})
-            client.start(3)
+            client.start(timeout=3)
             ZOO_CLIENTS[cluster_name] = client
         except KazooTimeoutError as exc:
             log.error('Failed to connnect zookeeper, %s', str(exc))
@@ -89,21 +89,20 @@ def set_or_create(cluster_name, path, value):
         zoo_client.set(path, value)
 
 
-def get_stat(hosts):
-    """get stat of zookeeper cluster of given idc
+def get_stat(host):
+    """get status of a single node in zookeeper cluster
     """
     cluster_info = dict()
-    for host in hosts.split(","):
-        try:
-            zoo_client = KazooClient(
-                hosts=host,
-                connection_retry={"max_tries": 1, "backoff": 1}
-            )
-            zoo_client.start(3)
-            cluster_info[host] = zoo_client.command("mntr")
-        except KazooTimeoutError as exc:
-            log.error('Failed to connnect zookeeper, %s', str(exc))
-            cluster_info[host] = str(exc)
+    try:
+        zoo_client = KazooClient(
+            hosts=host,
+            connection_retry={"max_tries": 1, "backoff": 1}
+        )
+        zoo_client.start(timeout=3)
+        cluster_info[host] = zoo_client.command("mntr")
+    except KazooTimeoutError as exc:
+        log.error('Failed to connnect zookeeper, %s', str(exc))
+        cluster_info[host] = str(exc)
     return cluster_info
 
 

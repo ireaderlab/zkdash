@@ -13,6 +13,7 @@ import os
 from kazoo.exceptions import NoNodeError
 
 from lib.utils import normalize_path
+from lib.zyqconf import qconf_py
 from model.db.zd_znode import ZdZnode
 from model.db.zd_snapshot import ZdSnapshot
 from service import zookeeper as ZookeeperService
@@ -52,6 +53,7 @@ def set_znode(cluster_name, path, data, znode_type='0', business=''):
     """
     path = normalize_path(path)
 
+    # 更新zookeeper上的数据
     ZookeeperService.set_or_create(cluster_name, path, data)
 
     # 在mysql上存储znode的相关元数据，节点类型和业务说明
@@ -72,7 +74,6 @@ def set_znode(cluster_name, path, data, znode_type='0', business=''):
 def set_batch_znodes(cluster_name, parent_path, batch_data, business=''):
     """set batch znodes from python data
     """
-    znodes = []
     for key, data in batch_data:
         path = os.path.join(parent_path, key)
         set_znode(cluster_name, path, data, business=business)
@@ -149,8 +150,6 @@ def get_znode_tree(zoo_client, path, nodes, current_id='1', parent_id='0'):
 def get_znode_tree_from_qconf(cluster_name, path, nodes, current_id='1', parent_id='0'):
     """get zookeeper nodes from qconf recursively, format as ztree data
     """
-    from lib.zyqconf import qconf_py
-
     # 节点名只取最末尾的名称
     name = path if path == "/" else path.rsplit('/', 1)[-1]
     nodes.append({
@@ -164,19 +163,17 @@ def get_znode_tree_from_qconf(cluster_name, path, nodes, current_id='1', parent_
     try:
         children = qconf_py.get_batch_keys(path, cluster_name)
     except qconf_py.Error as exc:
-        # fix bug for qconf get_batch_keys from root path "/"
+        # fix bugs for qconf's get_batch_keys error while path is root path("/")
         if exc.message == "Error parameter!":
             zoo_client = ZookeeperService.get_zoo_client(cluster_name)
             children = zoo_client.get_children(path)
         else:
-            log.warning('Node does not exists on QConf agent: %s', path)
+            log.warning('Node does not exists on QConf Agent, path: %s', path)
 
     for idx, child in enumerate(children):
-        # 左填充0到数字, 避免树的广度过宽，id冲突错误, 01, 09...
-        idx = '{0:02d}'.format(idx)
-        # parent_id as 1, then child_id should be 10, 11, 12...
-        child_id = "{0}{1}".format(current_id, idx)
         child_path = os.path.join(path, str(child))
+        # 如果父节点ID为1，则它的子节点ID应为101, 102, 103(左填充0到数字, 避免树的广度过宽，id冲突错误, 01, 09...)
+        child_id = "{0}{1:02d}".format(current_id, idx)
         get_znode_tree_from_qconf(cluster_name, child_path, nodes, child_id, current_id)
 
 

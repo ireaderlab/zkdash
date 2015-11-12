@@ -72,14 +72,14 @@ class ZdZookeeperStatHandler(CommonBaseHandler):
     """stat
     """
     args_list = [
-        ArgsMap('hosts', required=True)
+        ArgsMap('host', required=True)
     ]
 
     @authenticated
     def response(self):
         """stat
         """
-        cluster_info = ZookeeperService.get_stat(self.hosts)
+        cluster_info = ZookeeperService.get_stat(self.host)
         self.render('config/zookeeper/statdetail.html',
                     cluster_info=cluster_info)
 
