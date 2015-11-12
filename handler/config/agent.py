@@ -14,6 +14,7 @@ import operator
 import json
 from difflib import Differ
 from tornado.web import authenticated
+from peewee import OperationalError
 from kazoo.exceptions import NoNodeError
 
 from handler.bases import CommonBaseHandler
@@ -23,6 +24,7 @@ from lib.excel import ExcelWorkBook
 from model.db.zd_qconf_agent import ZdQconfAgent
 from model.db.zd_zookeeper import ZdZookeeper
 from service import zookeeper as ZookeeperService
+from conf import log
 
 
 @route(r'/config/agent/index', '查看')
@@ -249,10 +251,16 @@ class ZdQconfAgentDeleteHandler(CommonBaseHandler):
     def response(self):
         '''delete
         '''
-        if self.info_ids:
-            id_li = self.info_ids.split(',')
-            for user_id in id_li:
-                ZdQconfAgent.one(id=user_id).delete_instance()
+        if not self.info_ids:
+            return self.ajax_popup(close_current=False, code=300, msg="请选择某条记录进行删除")
+
+        id_list = self.info_ids.split(',')
+        try:
+            del_query = ZdQconfAgent.delete().where(ZdQconfAgent.id << id_list)
+            del_query.execute()
+        except OperationalError as exc:
+            log.error("error occurred while delete agents, ids: %s\n%s", id_list, str(exc))
+            return self.ajax_popup(close_current=False, code=300, msg="删除失败！")
         return self.ajax_ok(close_current=False)
 
 

@@ -13,6 +13,7 @@ import urllib
 import operator
 import json
 from tornado.web import authenticated
+from peewee import OperationalError
 
 from handler.bases import CommonBaseHandler
 from handler.bases import ArgsMap
@@ -20,6 +21,7 @@ from lib import route
 from lib.excel import ExcelWorkBook
 from model.db.zd_zookeeper import ZdZookeeper
 from service import zookeeper as ZookeeperService
+from conf import log
 
 
 @route(r'/config/zookeeper/index', '查看')
@@ -200,10 +202,16 @@ class ZdZookeeperDeleteHandler(CommonBaseHandler):
     def response(self):
         '''delete
         '''
-        if self.info_ids:
-            id_li = self.info_ids.split(',')
-            for user_id in id_li:
-                ZdZookeeper.one(id=user_id).delete_instance()
+        if not self.info_ids:
+            return self.ajax_popup(close_current=False, code=300, msg="请选择某条记录进行删除")
+
+        id_list = self.info_ids.split(',')
+        try:
+            del_query = ZdZookeeper.delete().where(ZdZookeeper.id << id_list)
+            del_query.execute()
+        except OperationalError as exc:
+            log.error("error occurred while delete zookeepers, ids: %s\n%s", id_list, str(exc))
+            return self.ajax_popup(close_current=False, code=300, msg="删除失败！")
         return self.ajax_ok(close_current=False)
 
 
