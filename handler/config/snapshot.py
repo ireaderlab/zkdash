@@ -20,6 +20,7 @@ from model.db.zd_zookeeper import ZdZookeeper
 from model.db.zd_snapshot import ZdSnapshot
 from service import snapshot as SnapshotService
 from service.snapshot import MakeSnapshotError
+from conf import log
 
 
 ############################################################
@@ -128,18 +129,19 @@ class ZdSnapshotDeleteHandler(CommonBaseHandler):
     """delete, 删除
     """
     args_list = [
-        ArgsMap('info_ids', default=''),
+        ArgsMap('id', required=True),
     ]
 
     @authenticated
     def response(self):
         '''delete
         '''
-        if self.info_ids:
-            id_li = self.info_ids.split(',')
-            for user_id in id_li:
-                ZdSnapshot.one(id=user_id).delete_instance()
-        return self.ajax_ok(close_current=True)
+        try:
+            ZdSnapshot.one(id=self.id).delete_instance()
+            return self.ajax_ok(close_current=True)
+        except Exception as exc:
+            log.error("error occurred while delete snapshot, id: %s\n%s", self.id, str(exc))
+            return self.ajax_popup(code=300, msg="删除快照出错啦！")
 
 
 @route(r'/config/snapshot/addsnapshots')
