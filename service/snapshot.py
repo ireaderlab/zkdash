@@ -118,8 +118,10 @@ def last_snapshot(cluster_name, path):
         (ZdSnapshot.deleted == "0")
     ).order_by(ZdSnapshot.create_time)
 
-    last_shot = snapshots[0]
+    last_shot = None
     for snapshot in snapshots:
+        if last_shot is None:
+            last_shot = snapshot
         # status为1代表正在使用，0代表备份中
         if snapshot.status == "1":
             break

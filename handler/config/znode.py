@@ -365,7 +365,8 @@ class ZdZnodeDeleteHandler(CommonBaseHandler):
     def response(self):
         '''delete
         '''
-        recursive = True if self.recursive == "1" else False
+        # recursive or not
+        recursive = self.recursive == "1"
         try:
             # 删除节点在mysql上的数据信息
             ZnodeService.delete_znodes(self.cluster_name, self.path, recursive, del_snapshots=False)
