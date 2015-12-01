@@ -13,7 +13,6 @@ import os
 from kazoo.exceptions import NoNodeError
 
 from lib.utils import normalize_path
-from lib.zyqconf import qconf_py
 from model.db.zd_znode import ZdZnode
 from model.db.zd_snapshot import ZdSnapshot
 from service import zookeeper as ZookeeperService
@@ -150,6 +149,8 @@ def get_znode_tree(zoo_client, path, nodes, current_id='1', parent_id='0'):
 def get_znode_tree_from_qconf(cluster_name, path, nodes, current_id='1', parent_id='0'):
     """get zookeeper nodes from qconf recursively, format as ztree data
     """
+    from lib.zyqconf import qconf_py
+
     # 节点名只取最末尾的名称
     name = path if path == "/" else path.rsplit('/', 1)[-1]
     nodes.append({
