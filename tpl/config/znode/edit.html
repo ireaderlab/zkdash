@@ -31,12 +31,21 @@
     <label class="col-md-4 control-label">节点值:</label>
     <div class="col-md-8" id="ed_node_data">
       {% if download_link %}
-        <a type="button" class="btn btn-default" href="{{ download_link }}">点击下载节点文件</a>
+	<input type="file" name="uploadfile">
       {% else %}
         <input class="form-control" type="text" name="data" value="{{ data }}" size="25">
       {% end %}
     </div>
    </div>
+
+      {% if download_link %}
+   <div class="form-group">
+    <label class="col-md-4 control-label">下载文件:</label>
+    <div class="col-md-8" id="ed_node_data">
+        <a type="button" class="btn btn-default" href="{{ download_link }}">点击下载节点文件</a>
+    </div>
+   </div>
+      {% end %}
 
   </div>
  </form>
