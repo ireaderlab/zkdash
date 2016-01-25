@@ -17,7 +17,7 @@ import yaml
 import tornado
 from tornado.options import define, options
 
-define("port", default=8080, help="port to listen", type=int)
+define("port", default=8088, help="port to listen", type=int)
 define("debug", default=True, help="debug mode or not")
 
 tornado.options.parse_command_line()
