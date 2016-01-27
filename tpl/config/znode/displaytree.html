@@ -65,6 +65,7 @@
             <div class="input-group">
               <button type="button" class="btn btn-orange" id="view_sync_status">同步状况</button>
               <button type="button" class="btn btn-orange" id="export_znode">导出</button>
+              <button type="button" class="btn btn-orange" id="copy_znode_tree">复制项目</button>
             </div>
           </li>
           <li class="list-group-item">
@@ -197,6 +198,17 @@ $('#add_snapshots').on('click', function(event){
   if (path && path.trim().length > 0) {
     var req_url = 'config/snapshot/addsnapshots?cluster_name=' + cluster_name + '&path=' + path;
     $(this).bjuiajax('doAjax', {url:req_url, confirmMsg:"确认生成该节点下所有快照吗？"})
+  } else {
+    $(this).alertmsg('error', '请指定节点路径！');
+  }
+});
+
+$('#copy_znode_tree').on('click', function(event){
+  var path = $('#zk_node_path').val();
+  var cluster_name = $('#zk_node_cluster').val();
+  if (path && path.trim().length > 0) {
+    var req_url = 'config/znode/copytree?parent_path=' + path + '&cluster_name=' + cluster_name;
+    $(this).dialog({url:req_url, title: '新增子节点树', width: 800, height: 450});
   } else {
     $(this).alertmsg('error', '请指定节点路径！');
   }

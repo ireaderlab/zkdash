@@ -135,6 +135,29 @@ class ZdZnodeAddHandler(CommonBaseHandler):
                            parent_path=self.parent_path)
 
 
+@route(r'/config/znode/copytree', '复制')
+class ZdZnodeAddHandler(CommonBaseHandler):
+
+    '''copy,复制节点,含子节点
+    '''
+    args_list = [
+        ArgsMap('cluster_name', required=True),
+        ArgsMap('parent_path', required=True),
+    ]
+
+    @authenticated
+    def response(self):
+        '''copytree
+        '''
+        index = self.parent_path.rfind('/')
+        path = self.parent_path[index+1:]
+        return self.render('config/znode/copytree.html',
+                           action='config/znode/savecopy',
+                           cluster_name=self.cluster_name,
+                           parent_path=self.parent_path,
+                           path=path)
+
+
 @route(r'/config/znode/edit', '修改')
 class ZdZnodeEditHandler(CommonBaseHandler):
 
@@ -416,3 +439,42 @@ class ZdZnodeExportHandler(CommonBaseHandler):
         self.set_header('Content-Type', 'application/octet-stream')
         self.set_header('Content-Disposition', 'attachment; filename={}'.format(filename))
         self.finish(data)
+
+
+
+@route(r'/config/znode/savecopy')
+class ZdZnodeSaveCopyHandler(CommonBaseHandler):
+    """savecopy
+    """
+    args_list = [
+        ArgsMap('cluster_name', required=True),
+        ArgsMap('path', default=''),
+        ArgsMap('parent_path', default=''),
+    ]
+
+    @authenticated
+    def response(self):
+        '''savecopy
+        '''
+        # node_name中不可包含`/`特殊字符
+        if self.path and not ZnodeService.is_node_name_ok(self.path):
+            return self.ajax_popup(code=300, msg="节点名不允许包含特殊字符'/'！")
+
+        zk_path = ""
+        if not self.path:
+            # 新增节点需要进行存在检验
+            zk_path = os.path.join(self.parent_path, self.path)
+            if ZookeeperService.exists(self.cluster_name, zk_path):
+                return self.ajax_popup(code=300, msg="节点已经存在！")
+        else:
+            return self.ajax_popup(code=300, msg="节点名称不能为空！")
+
+        # 更新在zookeeper和mysql上存储的配置信息, 同时进行快照备份
+        ZnodeService.set_znode(cluster_name=self.cluster_name,
+                               path=zk_path,
+                               data=zk_data,
+                               znode_type=self.znode_type,
+                               business=self.business)
+
+        return self.ajax_ok(close_current=True)
+
