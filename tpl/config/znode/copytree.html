@@ -1,0 +1,28 @@
+<div class="bjui-pageContent">
+ <form class="form-horizontal" role="form" action="{{ action }}" enctype="multipart/form-data" data-toggle="validate" data-reload-navtab="true" data-alertmsg="false">
+  {% raw xsrf_form_html() %}
+  <div class="pageFormContent" data-layout-h="0"><p></p>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">集群名:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="cluster_name" value="{{ cluster_name }}" size="25" readonly>
+    </div>
+   </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label">新节点名:</label>
+    <div class="col-md-8">
+     <input class="form-control" type="text" name="path" value="copy_{{ path_name }}" size="25" >
+     <input  type="hidden" name="parent_path" value="{{ parent_path }}" >
+     <input  type="hidden" name="old_path" value="{{ path }}" >
+    </div>
+   </div>
+
+  </div>
+ </form>
+</div>
+<div align="right" class="bjui-pageFooter">
+   <button type="submit" class="btn-default" data-icon="save">保存</button>
+   <button type="button" class="btn-close" data-icon="close">取消</button>
+</div>

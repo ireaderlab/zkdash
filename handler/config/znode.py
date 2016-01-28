@@ -20,6 +20,7 @@ from handler.bases import CommonBaseHandler
 from handler.bases import ArgsMap
 from lib import route
 from lib.utils import normalize_path
+from lib.utils import full_path
 from model.db.zd_znode import ZdZnode
 from model.db.zd_zookeeper import ZdZookeeper
 from model.db.zd_qconf_feedback import ZdQconfFeedback
@@ -136,7 +137,7 @@ class ZdZnodeAddHandler(CommonBaseHandler):
 
 
 @route(r'/config/znode/copytree', '复制')
-class ZdZnodeAddHandler(CommonBaseHandler):
+class ZdZnodeCopyHandler(CommonBaseHandler):
 
     '''copy,复制节点,含子节点
     '''
@@ -151,11 +152,13 @@ class ZdZnodeAddHandler(CommonBaseHandler):
         '''
         index = self.parent_path.rfind('/')
         path = self.parent_path[index+1:]
+        parent_path = self.parent_path[:index]
         return self.render('config/znode/copytree.html',
                            action='config/znode/savecopy',
                            cluster_name=self.cluster_name,
-                           parent_path=self.parent_path,
-                           path=path)
+                           parent_path=parent_path,
+                           path_name=path,
+                           path=self.parent_path)
 
 
 @route(r'/config/znode/edit', '修改')
@@ -448,8 +451,9 @@ class ZdZnodeSaveCopyHandler(CommonBaseHandler):
     """
     args_list = [
         ArgsMap('cluster_name', required=True),
-        ArgsMap('path', default=''),
-        ArgsMap('parent_path', default=''),
+        ArgsMap('path', required=True),
+        ArgsMap('old_path', required=True),
+        ArgsMap('parent_path', default='/'),
     ]
 
     @authenticated
@@ -463,18 +467,36 @@ class ZdZnodeSaveCopyHandler(CommonBaseHandler):
         zk_path = ""
         if not self.path:
             # 新增节点需要进行存在检验
+            return self.ajax_popup(code=300, msg="节点名称不能为空！")
+        else:
             zk_path = os.path.join(self.parent_path, self.path)
             if ZookeeperService.exists(self.cluster_name, zk_path):
                 return self.ajax_popup(code=300, msg="节点已经存在！")
+
+        normalized_path = normalize_path(self.old_path)
+        nodes = []
+
+        if USE_QCONF:
+            ZnodeService.get_znode_tree_from_qconf(self.cluster_name, normalized_path, nodes)
         else:
-            return self.ajax_popup(code=300, msg="节点名称不能为空！")
+            zoo_client = ZookeeperService.get_zoo_client(self.cluster_name)
+            if not zoo_client:
+                return self.ajax_popup(code=300, msg="连接zookeeper出错！")
+            ZnodeService.get_znode_tree(zoo_client, normalized_path, nodes)
 
-        # 更新在zookeeper和mysql上存储的配置信息, 同时进行快照备份
-        ZnodeService.set_znode(cluster_name=self.cluster_name,
-                               path=zk_path,
-                               data=zk_data,
-                               znode_type=self.znode_type,
-                               business=self.business)
+        path = full_path(self.path,self.parent_path)
+        #ZnodeService.save_znode_tree(self.cluster_name , normalized_path , path)
 
+        index = self.old_path.rfind('/')
+        old_node_name = self.old_path[index+1:]
+
+        for node in nodes:
+            new_path = node['path'].replace(old_node_name,self.path,1)
+            ZnodeService.save_znode_tree(self.cluster_name , node['path'] ,new_path)
+        #ret = ZnodeService.save_znode_tree(self.cluster_name ,self.parent_path,self.old_path,self.path)
+
+        #if not ret:
+        #    return self.ajax_popup(code=300,msg='添加失败')
         return self.ajax_ok(close_current=True)
+        #return self.ajax_popup(code=300,msg='cp')
 

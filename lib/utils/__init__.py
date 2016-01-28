@@ -39,6 +39,14 @@ def normalize_path(path):
     return '/' + path
 
 
+def full_path(path,parent_path):
+    """normalize path
+    """
+    parent_path = parent_path.strip('/')
+    path = path.strip('/')
+    return parent_path+ '/' + path
+
+
 def page_range(record_number, page_size, current_page):
     """计算分页时元索的区间以偏移量start 和 stop
     Args:

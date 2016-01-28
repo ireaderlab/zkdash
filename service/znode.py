@@ -13,6 +13,7 @@ import os
 from kazoo.exceptions import NoNodeError
 
 from lib.utils import normalize_path
+from lib.utils import full_path
 from model.db.zd_znode import ZdZnode
 from model.db.zd_snapshot import ZdSnapshot
 from service import zookeeper as ZookeeperService
@@ -177,6 +178,14 @@ def get_znode_tree_from_qconf(cluster_name, path, nodes, current_id='1', parent_
         child_id = "{0}{1:02d}".format(current_id, idx)
         get_znode_tree_from_qconf(cluster_name, child_path, nodes, child_id, current_id)
 
+
+def save_znode_tree(cluster_name,node_path,new_node_path):
+    data = ZookeeperService.get(cluster_name, node_path)
+    znode = ZdZnode.one(cluster_name=cluster_name, path=node_path, deleted="0")
+    if znode is None:
+        return False
+    set_znode(cluster_name, new_node_path, data, znode_type=znode.type, business=znode.business)
+    return True;
 
 if __name__ == '__main__':
     pass
