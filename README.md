@@ -78,3 +78,6 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
  1. 新增节点需要先指定父节点，并且只能逐级增加
  2. 当设置使用QConf获取zookeeper数据时，zookeeper管理菜单下的zookeeper集群名称需要与QConf
     客户端Agent配置文件的idc名称一致
+
+### 技术交流
+ 1. QQ群：329474804  申请备注请说明zkdash技术交流
