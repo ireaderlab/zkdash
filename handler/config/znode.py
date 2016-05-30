@@ -177,6 +177,7 @@ class ZdZnodeEditHandler(CommonBaseHandler):
                            cluster_name=self.cluster_name,
                            path=normalized_path,
                            data=data,
+                           business = znode.business,
                            download_link=download_link)
 
 
