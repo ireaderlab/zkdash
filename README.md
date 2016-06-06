@@ -37,10 +37,20 @@ zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper�
  	根据需要修改当前目录下./conf/conf.yml中相关配置信息，配置文件详细说明见后面
 
  - 同步数据库表结构
- 
+      首先创建数据库zkdash，并设置数据库的用户名和密码
+      将配置文件的数据库的用户名和密码进行修改
+      ```
+      DATABASE:
+        db: 'zkdash'
+        host: '192.168.1.1'   # 修改为你的数据库地址
+        port: 3306   # 设置端口号
+        user: 'tokyo'   # 修改用户名
+        passwd: 'tokyo!'  # 修改密码
+      ```
+       设置完成后进行初始化数据库
  	```
  	cd zkdash
- 	python ./bin/syncdb.py
+ 	python ./bin/syncdb.py   # 注意执行路径必须为./bin/syncdb.py
 	```
 	说明：数据库使用mysql，创建表结构前请先配置数据库连接信息
 
