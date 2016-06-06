@@ -78,6 +78,13 @@ class ZdZnodeShowHandler(CommonBaseHandler):
         if normalized_path != "/" and len(nodes) <= 1:
             return self.ajax_popup(code=300, msg="对不起，该节点路径下（%s）无数据！" % self.path)
 
+        for node in nodes:
+            zk_node = ZdZnode.one(path=node["path"], cluster_name=self.cluster_name)
+            if zk_node:
+                node['type'] = zk_node.type
+                node['business'] = zk_node.business
+                node['data'] = ZookeeperService.get(self.cluster_name, node["path"])
+
         znodes_data = json.dumps(nodes)
         return self.render('config/znode/displaytree.html',
                            cluster_name=self.cluster_name,
@@ -170,6 +177,7 @@ class ZdZnodeEditHandler(CommonBaseHandler):
                            cluster_name=self.cluster_name,
                            path=normalized_path,
                            data=data,
+                           business = znode.business,
                            download_link=download_link)
 
 

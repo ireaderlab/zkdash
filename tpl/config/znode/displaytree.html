@@ -38,6 +38,22 @@
             </div>
           </li>
           <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">节点值</button>
+              </span>
+              <input type="text" class="form-control" id="zk_node_data" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">业务</button>
+              </span>
+              <input type="text" class="form-control" id="zk_node_business" size="40" readonly>
+            </div>
+          </li>
+          <li class="list-group-item">
             <label>CRUD操作</label>
             <div class="input-group">
               <button type="button" class="btn btn-green" id="view_znode">查看</button>
@@ -89,6 +105,16 @@ function zkNodeClick(event, treeId, treeNode){
       $('#zk_node_name').val(treeNode.name)
     } else {
       $('#zk_node_name').val('')
+    }
+    if (treeNode.data) {
+      $('#zk_node_data').val(treeNode.data)
+    } else {
+      $('#zk_node_data').val('')
+    }
+    if (treeNode.business) {
+      $('#zk_node_business').val(treeNode.business)
+    } else {
+      $('#zk_node_business').val('')
     }
 };
 

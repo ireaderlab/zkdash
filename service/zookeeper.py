@@ -13,6 +13,7 @@ from kazoo.client import KazooClient
 from kazoo.handlers.threading import KazooTimeoutError
 from model.db.zd_zookeeper import ZdZookeeper
 from conf import log
+import sys
 
 
 ZOO_CLIENTS = dict()
@@ -79,6 +80,8 @@ def delete(cluster_name, path, recursive=False):
 
 
 def set_or_create(cluster_name, path, value):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     """set or create znode in zookeepe
     """
     zoo_client = get_zoo_client(cluster_name)
