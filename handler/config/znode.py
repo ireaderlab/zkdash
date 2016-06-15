@@ -68,7 +68,8 @@ class ZdZnodeShowHandler(CommonBaseHandler):
         normalized_path = normalize_path(self.path)
 
         if USE_QCONF:
-            ZnodeService.get_znode_tree_from_qconf(self.cluster_name, normalized_path, nodes)
+            ZnodeService.get_znode_tree_from_qconf(
+                self.cluster_name, normalized_path, nodes)
         else:
             zoo_client = ZookeeperService.get_zoo_client(self.cluster_name)
             if not zoo_client:
@@ -76,14 +77,18 @@ class ZdZnodeShowHandler(CommonBaseHandler):
             ZnodeService.get_znode_tree(zoo_client, normalized_path, nodes)
 
         if normalized_path != "/" and len(nodes) <= 1:
-            return self.ajax_popup(code=300, msg="对不起，该节点路径下（%s）无数据！" % self.path)
+            return self.ajax_popup(
+                code=300, msg="对不起，该节点路径下（%s）无数据！" % self.path)
 
         for node in nodes:
-            zk_node = ZdZnode.one(path=node["path"], cluster_name=self.cluster_name)
+            zk_node = ZdZnode.one(
+                path=node["path"],
+                cluster_name=self.cluster_name)
             if zk_node:
                 node['type'] = zk_node.type
                 node['business'] = zk_node.business
-                node['data'] = ZookeeperService.get(self.cluster_name, node["path"])
+                node['data'] = ZookeeperService.get(
+                    self.cluster_name, node["path"])
 
         znodes_data = json.dumps(nodes)
         return self.render('config/znode/displaytree.html',
@@ -106,7 +111,10 @@ class ZdZnodeViewHandler(CommonBaseHandler):
         """
         download_link = data = node_type = ""
 
-        znode = ZdZnode.one(path=self.path, cluster_name=self.cluster_name, deleted="0")
+        znode = ZdZnode.one(
+            path=self.path,
+            cluster_name=self.cluster_name,
+            deleted="0")
         if znode:
             node_type = znode.type
 
@@ -159,9 +167,14 @@ class ZdZnodeEditHandler(CommonBaseHandler):
         node_type = data = download_link = ""
 
         normalized_path = normalize_path(self.path)
-        znode = ZdZnode.one(path=normalized_path, cluster_name=self.cluster_name, deleted='0')
+        znode = ZdZnode.one(
+            path=normalized_path,
+            cluster_name=self.cluster_name,
+            deleted='0')
+        business = ""
         if znode:
             node_type = znode.type
+            business = znode.business
 
         # "0"代表普通节点, "1"代表文本节点
         if node_type == "1":
@@ -177,7 +190,7 @@ class ZdZnodeEditHandler(CommonBaseHandler):
                            cluster_name=self.cluster_name,
                            path=normalized_path,
                            data=data,
-                           business = znode.business,
+                           business=business,
                            download_link=download_link)
 
 
@@ -195,7 +208,8 @@ class ZdZnodeEditTreeHandler(CommonBaseHandler):
     def response(self):
         '''batch edit
         '''
-        child_znodes = ZnodeService.get_child_znodes(self.cluster_name, self.path)
+        child_znodes = ZnodeService.get_child_znodes(
+            self.cluster_name, self.path)
         return self.render('config/znode/batchedit.html',
                            action='/config/znode/batchsave',
                            cluster_name=self.cluster_name,
@@ -348,7 +362,8 @@ class ZdZnodeBatchSaveHandler(CommonBaseHandler):
             batch_data.append((node_name, node_value))
 
         # 更新字典，需要删除旧字典与新字典的差集项
-        ZnodeService.delete_znodes_diff_with_keys(self.cluster_name, self.parent_path, keys)
+        ZnodeService.delete_znodes_diff_with_keys(
+            self.cluster_name, self.parent_path, keys)
         # 更新在zookeeper和mysql上存储的配置信息, 同时进行快照备份
         ZnodeService.set_batch_znodes(cluster_name=self.cluster_name,
                                       parent_path=self.parent_path,
@@ -377,7 +392,11 @@ class ZdZnodeDeleteHandler(CommonBaseHandler):
         recursive = self.recursive == "1"
         try:
             # 删除节点在mysql上的数据信息
-            ZnodeService.delete_znodes(self.cluster_name, self.path, recursive, del_snapshots=False)
+            ZnodeService.delete_znodes(
+                self.cluster_name,
+                self.path,
+                recursive,
+                del_snapshots=False)
             ZookeeperService.delete(self.cluster_name, self.path, recursive)
             return self.ajax_ok(close_current=False)
         except (NotEmptyError, BadArgumentsError) as exc:
@@ -401,7 +420,8 @@ class ZdZnodeDownloadHandler(CommonBaseHandler):
         data = ZookeeperService.get(self.cluster_name, self.path)
         filename = "{}".format(self.path.rsplit('/')[-1])
         self.set_header('Content-Type', 'application/octet-stream')
-        self.set_header('Content-Disposition', 'attachment; filename={}'.format(filename))
+        self.set_header('Content-Disposition',
+                        'attachment; filename={}'.format(filename))
         self.finish(data)
 
 
@@ -422,5 +442,6 @@ class ZdZnodeExportHandler(CommonBaseHandler):
         data = ZookeeperService.get(self.cluster_name, self.path)
         filename = "{}".format(self.path.rsplit('/')[-1])
         self.set_header('Content-Type', 'application/octet-stream')
-        self.set_header('Content-Disposition', 'attachment; filename={}'.format(filename))
+        self.set_header('Content-Disposition',
+                        'attachment; filename={}'.format(filename))
         self.finish(data)
