@@ -66,7 +66,7 @@ class Application(tornado.web.Application):
 
 
 def make_clean():
-    '''清理pyc文件
+    '''清理文件
     '''
     pyshell.shell("find . -name '*.pyc' | xargs rm -rf", debug=True)
 
