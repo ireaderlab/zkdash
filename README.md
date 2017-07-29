@@ -1,5 +1,9 @@
 # zkdash
+
 zkdash是一个zookeeper的管理界面，也可以作为任何基于zookeeper的配置管理项目比如：Qconf
+
+## 开发规划
+zkdash目前正在开发第二版本，更易用，更开发，拥有完善权限管理，支持zk，更易用。
 
 ### zkdash页面展示
 
