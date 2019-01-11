@@ -9,7 +9,7 @@ All rights reserved.
 创建日期: 2015-09-09
 '''
 # pylint: disable=relative-import
-import qconf_py
+import ctypes
 import hooks
 from .types import (
     QconfNode,
@@ -17,6 +17,7 @@ from .types import (
     DictNode,
     HOOK_CONF_ERROR,
 )
+qconf_py = ctypes.CDLL('./qconf_py.so')
 
 __version__ = '1.0.0'
 
