@@ -23,15 +23,11 @@ zkdash目前正在开发第二版本，更易用，更开发，拥有完善权�
  
  - 安装python2.7, 版本最好 >= 2.7.6
 
- - 下载zkdash
- 
-       ```
-       git clone https://github.com/ireaderlab/zkdash.git
-       ```
+ - 下载zkdash `git clone https://github.com/ireaderlab/zkdash.git`
 
  - 安装依赖项
-
-    ```
+	
+	```
     cd zkdash
     pip install -r requirements.txt
     ```
@@ -43,6 +39,7 @@ zkdash目前正在开发第二版本，更易用，更开发，拥有完善权�
  - 同步数据库表结构
       首先创建数据库zkdash，并设置数据库的用户名和密码
       将配置文件的数据库的用户名和密码进行修改
+      
       ```
       DATABASE:
         db: 'zkdash'
@@ -51,11 +48,14 @@ zkdash目前正在开发第二版本，更易用，更开发，拥有完善权�
         user: 'tokyo'   # 修改用户名
         passwd: 'tokyo!'  # 修改密码
       ```
+       
        设置完成后进行初始化数据库
- 	```
- 	cd zkdash
- 	python ./bin/syncdb.py   # 注意执行路径必须为./bin/syncdb.py
-	```
+ 	
+      ```
+      cd zkdash
+      python ./bin/syncdb.py   # 注意执行路径必须为./bin/syncdb.py
+      ```
+	
 	说明：数据库使用mysql，创建表结构前请先配置数据库连接信息
 
  - 运行
@@ -64,10 +64,12 @@ zkdash目前正在开发第二版本，更易用，更开发，拥有完善权�
 	cd zkdash
 	python init.py -port=8888
 	```
+	
 	说明：初次运行zkdash时需要到zookeeper管理菜单下增加监控的zookeeper集群ip信息
 
 
 ### 配置文件说明
+
 配置文件详细说明
 
 数据库配置项(DATABASE)
