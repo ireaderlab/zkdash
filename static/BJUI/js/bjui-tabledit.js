@@ -127,6 +127,8 @@
                             $th = $(this), $child = $th.children(), $pic = $th.find('.pic-box')
                         
                         if (typeof val == 'undefined') val = $td.html()
+                        if (typeof val == 'object') val = JSON.stringify(val)
+
                         if (!$td.data('noedit')) {
                             if ($child.length) {
                                 if ($child.is('input:checkbox') || $child.is('input:radio')) {

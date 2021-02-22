@@ -171,7 +171,7 @@ def _get_recursively(zoo_client, path, nodes):
     else:
         nodes.append({"path": path, "data": data})
         for child in zoo_client.get_children(path):
-            child_path = os.path.join(path, child)
+            child_path = "/{0}".format(child) if path == "/" else "{0}/{1}".format(path, child)
             _get_recursively(zoo_client, child_path, nodes)
 
 

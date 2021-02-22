@@ -38,7 +38,7 @@ def get_child_znodes(cluster_name, path):
     children = zoo_client.get_children(path)
     # iter child nodes and convert to dict with extra info
     for child in children:
-        child_path = os.path.join(path, child)
+        child_path = "/{0}".format(child) if path == "/" else "{0}/{1}".format(path, child)
         data, _ = zoo_client.get(child_path)
         # node
         node = {"path": child_path, "value": data}
@@ -74,7 +74,7 @@ def set_batch_znodes(cluster_name, parent_path, batch_data, business=''):
     """set batch znodes from python data
     """
     for key, data in batch_data:
-        path = os.path.join(parent_path, key)
+        path = "/{0}".format(key) if parent_path == "/" else "{0}/{1}".format(parent_path, key)
         set_znode(cluster_name, path, data, business=business)
 
 
@@ -115,7 +115,7 @@ def delete_znodes_diff_with_keys(cluster_name, parent_path, keys):
     children = zoo_client.get_children(parent_path)
     diff_znodes = [child for child in children if child not in keys]
     for znode in diff_znodes:
-        path = os.path.join(parent_path, znode)
+        path = "/{0}".format(znode) if parent_path == "/" else "{0}/{1}".format(parent_path, znode)
         zoo_client.delete(path, version=-1, recursive=False)
         delete_znodes(cluster_name, path, recursive=False, del_snapshots=True)
 
@@ -142,7 +142,7 @@ def get_znode_tree(zoo_client, path, nodes, current_id='1', parent_id='0'):
             idx = '{0:02d}'.format(idx)
             # parent_id as 1, then child_id should be 10, 11, 12...
             child_id = "{0}{1}".format(current_id, idx)
-            child_path = os.path.join(path, child)
+            child_path = "/{0}".format(child) if path == "/" else "{0}/{1}".format(path, child)
             get_znode_tree(zoo_client, child_path, nodes, child_id, current_id)
 
 

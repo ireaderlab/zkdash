@@ -307,7 +307,8 @@ class ZdZnodeSaveHandler(CommonBaseHandler):
         zk_path = ""
         if not self.path:
             # 新增节点需要进行存在检验
-            zk_path = os.path.join(self.parent_path, self.node_name)
+            zk_path = "/{0}".format(self.node_name) if self.parent_path == "/" else "{0}/{1}".format(self.parent_path,
+                                                                                                     self.node_name)
             if ZookeeperService.exists(self.cluster_name, zk_path):
                 return self.ajax_popup(code=300, msg="节点已经存在！")
         else:
