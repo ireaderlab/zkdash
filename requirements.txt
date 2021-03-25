@@ -2,7 +2,7 @@ tornado==4.0
 peewee==2.4.7
 xlrd==0.9.3
 xlwt==0.7.5
-PyYAML==5.1
+PyYAML==5.4
 pymysql==0.7.4
 argparse==1.2.1
 kazoo==2.1
